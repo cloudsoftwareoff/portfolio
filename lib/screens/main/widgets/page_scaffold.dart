@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:portfolio/core/resources/app_colors.dart';
 
 class PageScaffold extends StatelessWidget {
   final Widget child;
@@ -7,12 +7,11 @@ class PageScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        // bottom padding so content never hides behind floating navbar
-        padding: const EdgeInsets.only(bottom: 80),
-        child: child,
-      ),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: AppColors.background,
+      child: child,
     );
   }
 }

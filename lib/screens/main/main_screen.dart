@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:portfolio/controllers/main_screen_controller.dart';
+import 'package:portfolio/core/resources/app_colors.dart';
 import 'package:portfolio/core/widgets/portfolio_background.dart';
+import 'package:portfolio/models/portfolio_data.dart';
 import 'package:portfolio/screens/main/widgets/floating_nav_bar.dart';
 import 'package:portfolio/screens/main/widgets/page_scaffold.dart';
 
@@ -20,19 +22,38 @@ class MainScreen extends GetView<MainScreenController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          // ── Shared reusable background ──
           const PortfolioBackground(),
-          // ── Page content ──
-          Obx(()=> _pages[controller.currentIndex.value]),
-          // ── Floating navbar ──
+          Obx(() => _pages[controller.currentIndex.value]),
           Positioned(
             bottom: 20,
-            // left: 40,
-            // right: 40,
             child: FloatingNavBar(),
+          ),
+          // Top right actions
+          Positioned(
+            top: 20,
+            right: 20,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.outline),
+                  ),
+                  child: const Text(
+                    'عربي',
+                    style: TextStyle(color: Colors.white, fontSize: 13),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Icon(Icons.wb_sunny_outlined, color: Colors.orange, size: 20),
+              ],
+            ),
           ),
         ],
       ),
@@ -40,11 +61,6 @@ class MainScreen extends GetView<MainScreenController> {
   }
 }
 
-//! pages: Home, About, Skills, Projects, Experience, Contact
-
-// ─────────────────────────────────────────────
-// PAGES
-// ─────────────────────────────────────────────
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -52,51 +68,156 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageScaffold(
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              'HELLO, I\'M',
-              style: TextStyle(
-                color: Color(0xFF26C6DA),
-                fontSize: 13,
-                letterSpacing: 2,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Profile Image
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Container(
+                    width: 280,
+                    height: 280,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.secondary, width: 2),
+                      image: const DecorationImage(
+                        image: NetworkImage('https://via.placeholder.com/280'), // Placeholder for profile pic
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 20, bottom: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.outline),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        CircleAvatar(radius: 4, backgroundColor: Colors.green),
+                        SizedBox(width: 6),
+                        Text('Open to work', style: TextStyle(color: Colors.white, fontSize: 11)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'The Great\nDeveloper',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 42,
-                fontWeight: FontWeight.w800,
-                height: 1.1,
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Mobile Developer',
-              style: TextStyle(
-                color: Color(0xFF26C6DA),
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: 12),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'Crafting seamless mobile experiences with Flutter & React Native, backed by solid backend fundamentals.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFFB0BEC5),
-                  fontSize: 14,
-                  height: 1.6,
+              const SizedBox(width: 60),
+              // Content
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      PortfolioData.subtitle,
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      PortfolioData.name,
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 56,
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          CircleAvatar(radius: 3, backgroundColor: AppColors.accent),
+                          SizedBox(width: 8),
+                          Text(
+                            PortfolioData.role,
+                            style: TextStyle(
+                              color: AppColors.accent,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      PortfolioData.homeDescription,
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 15,
+                        height: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.secondary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          icon: const Icon(Icons.code, size: 20),
+                          label: const Text('GitHub', style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                        const SizedBox(width: 16),
+                        OutlinedButton.icon(
+                          onPressed: () {},
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            side: const BorderSide(color: AppColors.outline),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          icon: const Icon(Icons.work_outline, size: 20),
+                          label: const Text('LinkedIn', style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+                    Wrap(
+                      spacing: 12,
+                      children: PortfolioData.homeSkillTags
+                          .map((tag) => Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surface,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: AppColors.outline),
+                                ),
+                                child: Text(
+                                  tag,
+                                  style: const TextStyle(color: AppColors.textDim, fontSize: 12),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -110,37 +231,123 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageScaffold(
       child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'About Me',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                ),
+            children: [
+              const PageTitle(title: 'About Me', subtitle: 'Who I am'),
+              const SizedBox(height: 40),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Left Side: Description
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.outline),
+                      ),
+                      child: const Text(
+                        PortfolioData.aboutDescription,
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 15,
+                          height: 1.8,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 32),
+                  // Right Side: Quick Info
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.outline),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'QUICK INFO',
+                            style: TextStyle(
+                              color: AppColors.textDim,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ...PortfolioData.quickInfos.map((info) => Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      info.label,
+                                      style: const TextStyle(color: AppColors.textDim, fontSize: 11),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      info.value,
+                                      style: TextStyle(
+                                        color: info.valueColor ?? Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    const Divider(color: AppColors.outline, height: 1),
+                                  ],
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 6),
-              Text(
-                'Who I am',
-                style: TextStyle(
-                  color: Color(0xFF26C6DA),
-                  fontSize: 13,
-                  letterSpacing: 2,
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'I\'m a passionate mobile developer focused on building beautiful, performant apps with Flutter and React Native. I love clean architecture and pixel-perfect UIs.',
-                style: TextStyle(
-                  color: Color(0xFFB0BEC5),
-                  fontSize: 15,
-                  height: 1.7,
-                ),
+              const SizedBox(height: 40),
+              // Stats
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: PortfolioData.aboutStats
+                    .map((stat) => Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 24),
+                            decoration: BoxDecoration(
+                              color: AppColors.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.outline),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  stat.value,
+                                  style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  stat.label,
+                                  style: const TextStyle(color: AppColors.textDim, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
             ],
           ),
@@ -153,47 +360,47 @@ class AboutPage extends StatelessWidget {
 class SkillsPage extends StatelessWidget {
   const SkillsPage({super.key});
 
-  static const _skills = [
-    ('Flutter', 0.92),
-    ('React Native', 0.85),
-    ('Node.js', 0.75),
-    ('Firebase', 0.80),
-    ('Dart', 0.90),
-    ('TypeScript', 0.70),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Skills',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'What I work with',
-              style: TextStyle(
-                color: Color(0xFF26C6DA),
-                fontSize: 13,
-                letterSpacing: 2,
-              ),
-            ),
-            const SizedBox(height: 28),
-            Expanded(
-              child: ListView(
-                children: _skills
-                    .map((s) => _SkillBar(label: s.$1, value: s.$2))
-                    .toList(),
-              ),
+            const PageTitle(title: 'Skills', subtitle: 'Technologies I work with'),
+            const SizedBox(height: 40),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: PortfolioData.skillCategories
+                  .map((category) => Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppColors.outline),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                category.title,
+                                style: const TextStyle(
+                                  color: AppColors.textDim,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              const SizedBox(height: 28),
+                              ...category.skills.map((skill) => _SkillBar(skill: skill)),
+                            ],
+                          ),
+                        ),
+                      ))
+                  .toList(),
             ),
           ],
         ),
@@ -203,14 +410,13 @@ class SkillsPage extends StatelessWidget {
 }
 
 class _SkillBar extends StatelessWidget {
-  final String label;
-  final double value;
-  const _SkillBar({required this.label, required this.value});
+  final Skill skill;
+  const _SkillBar({required this.skill});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
+      padding: const EdgeInsets.only(bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -218,24 +424,52 @@ class _SkillBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                label,
-                style: const TextStyle(color: Colors.white70, fontSize: 13),
+                skill.name,
+                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
               ),
-              Text(
-                '${(value * 100).toInt()}%',
-                style: const TextStyle(color: Color(0xFF26C6DA), fontSize: 12),
+              Row(
+                children: [
+                  Text(
+                    '${(skill.level * 100).toInt()}%',
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      skill.proficiency,
+                      style: const TextStyle(color: AppColors.secondary, fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: value,
-              minHeight: 6,
-              backgroundColor: Colors.white10,
-              valueColor: const AlwaysStoppedAnimation(Color(0xFF00BFA5)),
-            ),
+          const SizedBox(height: 10),
+          Stack(
+            children: [
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  color: AppColors.outline,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: skill.level,
+                child: Container(
+                  height: 6,
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -246,63 +480,25 @@ class _SkillBar extends StatelessWidget {
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
 
-  static const _projects = [
-    (
-      'E-Commerce App',
-      'Flutter • Firebase',
-      'Full-featured shopping app with cart, payments & order tracking.',
-    ),
-    (
-      'Chat App',
-      'React Native • Node.js',
-      'Real-time messaging with sockets, media sharing & notifications.',
-    ),
-    (
-      'Portfolio Website',
-      'Flutter Web',
-      'This very portfolio built entirely in Flutter.',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final featured = PortfolioData.projects.firstWhere((p) => p.categories.contains('FEATURED'));
+    final others = PortfolioData.projects.where((p) => !p.categories.contains('FEATURED')).toList();
+
     return PageScaffold(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                'Projects',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                'What I\'ve built',
-                style: TextStyle(
-                  color: Color(0xFF26C6DA),
-                  fontSize: 13,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: _projects
-                    .map(
-                      (p) => _ProjectCard(title: p.$1, tech: p.$2, desc: p.$3),
-                    )
-                    .toList(),
-              ),
+            const PageTitle(title: 'Projects', subtitle: "Things I've built"),
+            const SizedBox(height: 40),
+            // Featured Project
+            _FeaturedProjectCard(project: featured),
+            const SizedBox(height: 32),
+            // Other Projects
+            Row(
+              children: others.map((p) => Expanded(child: _ProjectCard(project: p))).toList(),
             ),
           ],
         ),
@@ -311,48 +507,170 @@ class ProjectsPage extends StatelessWidget {
   }
 }
 
-class _ProjectCard extends StatelessWidget {
-  final String title, tech, desc;
-  const _ProjectCard({
-    required this.title,
-    required this.tech,
-    required this.desc,
-  });
+class _FeaturedProjectCard extends StatelessWidget {
+  final Project project;
+  const _FeaturedProjectCard({required this.project});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.outline),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: project.categories
+                      .map((cat) => Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: cat == 'Live' ? Colors.green.withValues(alpha: 0.1) : AppColors.outline,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                if (cat == 'Live') ...[
+                                  const CircleAvatar(radius: 3, backgroundColor: Colors.green),
+                                  const SizedBox(width: 6),
+                                ],
+                                Text(
+                                  cat.toUpperCase(),
+                                  style: TextStyle(
+                                    color: cat == 'Live' ? Colors.green : AppColors.textDim,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  project.title,
+                  style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  project.description,
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.6),
+                ),
+                const SizedBox(height: 24),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: project.techTags
+                      .map((tag) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceHover,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(tag, style: const TextStyle(color: AppColors.textDim, fontSize: 11)),
+                          ))
+                      .toList(),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  children: [
+                    _ActionButton(label: 'View on GitHub', icon: Icons.code, onPressed: () {}),
+                    const SizedBox(width: 16),
+                    _ActionButton(label: 'Live Demo', icon: Icons.launch, isPrimary: true, onPressed: () {}),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 40),
+          Expanded(
+            flex: 2,
+            child: Container(
+              height: 240,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF1E293B), Color(0xFF334155)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.image_outlined, size: 64, color: AppColors.textDim),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProjectCard extends StatelessWidget {
+  final Project project;
+  const _ProjectCard({required this.project});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: AppColors.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: project.categories
+                .map((cat) => Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: cat == 'Live' ? Colors.green.withValues(alpha: 0.1) : AppColors.outline,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        cat.toUpperCase(),
+                        style: TextStyle(
+                          color: cat == 'Live' ? Colors.green : AppColors.textDim,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ))
+                .toList(),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 16),
           Text(
-            tech,
-            style: const TextStyle(color: Color(0xFF26C6DA), fontSize: 12),
+            project.title,
+            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(
-            desc,
-            style: const TextStyle(
-              color: Color(0xFFB0BEC5),
-              fontSize: 13,
-              height: 1.5,
-            ),
+            project.description,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: AppColors.textSecondary, fontSize: 13, height: 1.5),
+          ),
+          const SizedBox(height: 20),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: project.techTags
+                .take(3)
+                .map((tag) => Text(tag, style: const TextStyle(color: AppColors.textDim, fontSize: 10)))
+                .toList(),
           ),
         ],
       ),
@@ -363,72 +681,17 @@ class _ProjectCard extends StatelessWidget {
 class ExperiencePage extends StatelessWidget {
   const ExperiencePage({super.key});
 
-  static const _exp = [
-    (
-      'Senior Flutter Dev',
-      'TechCorp Inc.',
-      '2022 – Present',
-      'Led mobile team building cross-platform apps used by 500k+ users.',
-    ),
-    (
-      'Mobile Developer',
-      'StartupXYZ',
-      '2020 – 2022',
-      'Built React Native apps from scratch with backend Node.js APIs.',
-    ),
-    (
-      'Junior Developer',
-      'Freelance',
-      '2018 – 2020',
-      'Developed small business apps and landing pages.',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                'Experience',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                'Where I\'ve worked',
-                style: TextStyle(
-                  color: Color(0xFF26C6DA),
-                  fontSize: 13,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: _exp
-                    .map(
-                      (e) => _TimelineItem(
-                        role: e.$1,
-                        company: e.$2,
-                        period: e.$3,
-                        desc: e.$4,
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
+            const PageTitle(title: 'Experience', subtitle: 'My professional journey'),
+            const SizedBox(height: 40),
+            ...PortfolioData.experiences.map((exp) => _ExperienceItem(exp: exp)),
           ],
         ),
       ),
@@ -436,81 +699,85 @@ class ExperiencePage extends StatelessWidget {
   }
 }
 
-class _TimelineItem extends StatelessWidget {
-  final String role, company, period, desc;
-  const _TimelineItem({
-    required this.role,
-    required this.company,
-    required this.period,
-    required this.desc,
-  });
+class _ExperienceItem extends StatelessWidget {
+  final Experience exp;
+  const _ExperienceItem({required this.exp});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF00BFA5),
-                  shape: BoxShape.circle,
-                ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                color: exp.dotColor,
+                shape: BoxShape.circle,
+                boxShadow: [BoxShadow(color: exp.dotColor.withValues(alpha: 0.4), blurRadius: 8)],
               ),
-              Container(width: 2, height: 80, color: Colors.white10),
-            ],
-          ),
-          const SizedBox(width: 16),
-          Expanded(
+            ),
+            Container(
+              width: 2,
+              height: 140,
+              color: AppColors.outline,
+            ),
+          ],
+        ),
+        const SizedBox(width: 32),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.outline),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  role,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      company,
-                      style: const TextStyle(
-                        color: Color(0xFF26C6DA),
-                        fontSize: 12,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          exp.role,
+                          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          exp.company,
+                          style: const TextStyle(color: AppColors.primary, fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      period,
-                      style: const TextStyle(
-                        color: Colors.white38,
-                        fontSize: 11,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceHover,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        exp.period,
+                        style: const TextStyle(color: AppColors.textDim, fontSize: 11, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 16),
                 Text(
-                  desc,
-                  style: const TextStyle(
-                    color: Color(0xFFB0BEC5),
-                    fontSize: 13,
-                    height: 1.5,
-                  ),
+                  exp.description,
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.6),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -522,39 +789,110 @@ class ContactPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageScaffold(
       child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Contact',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'Get in touch',
-                style: TextStyle(
-                  color: Color(0xFF26C6DA),
-                  fontSize: 13,
-                  letterSpacing: 2,
-                ),
-              ),
-              const SizedBox(height: 32),
-              _ContactItem(
-                icon: Icons.mail_outline,
-                label: 'hello@greatdev.io',
-              ),
-              const SizedBox(height: 14),
-              _ContactItem(icon: Icons.code, label: 'github.com/greatdev'),
-              const SizedBox(height: 14),
-              _ContactItem(
-                icon: Icons.work_outline,
-                label: 'linkedin.com/in/greatdev',
+              const PageTitle(title: 'Contact', subtitle: "Let's work together"),
+              const SizedBox(height: 40),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Left Side: Info
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(32),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.outline),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Have a project? Let's build it.",
+                                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                "Specialised in Flutter apps and ASP.NET Web API backends.\nWhether you want to collaborate or hire — I'm available.",
+                                style: TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.6),
+                              ),
+                              const SizedBox(height: 24),
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.green.withValues(alpha: 0.1)),
+                                ),
+                                child: Row(
+                                  children: const [
+                                    CircleAvatar(radius: 4, backgroundColor: Colors.green),
+                                    SizedBox(width: 12),
+                                    Text(
+                                      'Available now · Flutter · ASP.NET · Replies within 24h',
+                                      style: TextStyle(color: AppColors.textDim, fontSize: 11),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ...PortfolioData.contactInfos.map((info) => _ContactCard(info: info)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 32),
+                  // Right Side: Form
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.outline),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Send a message",
+                            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 32),
+                          const _InputField(label: 'Name', hint: 'Your name'),
+                          const SizedBox(height: 20),
+                          const _InputField(label: 'Email', hint: 'your@email.com'),
+                          const SizedBox(height: 20),
+                          const _InputField(label: 'Message', hint: 'Tell me about your project...', maxLines: 5),
+                          const SizedBox(height: 32),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.accent,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                              child: const Text('Send Message', style: TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -564,30 +902,142 @@ class ContactPage extends StatelessWidget {
   }
 }
 
-class _ContactItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _ContactItem({required this.icon, required this.label});
+class _ContactCard extends StatelessWidget {
+  final ContactInfo info;
+  const _ContactCard({required this.info});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.outline),
       ),
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFF00BFA5), size: 20),
-          const SizedBox(width: 14),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white70, fontSize: 14),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: AppColors.surfaceHover, borderRadius: BorderRadius.circular(10)),
+            child: Icon(info.icon, color: AppColors.textDim, size: 20),
           ),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(info.label, style: const TextStyle(color: AppColors.textDim, fontSize: 10, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 2),
+              Text(info.value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+            ],
+          ),
+          const Spacer(),
+          const Icon(Icons.arrow_outward, color: AppColors.textDim, size: 16),
         ],
       ),
+    );
+  }
+}
+
+class _InputField extends StatelessWidget {
+  final String label;
+  final String hint;
+  final int maxLines;
+  const _InputField({required this.label, required this.hint, this.maxLines = 1});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13, fontWeight: FontWeight.w600)),
+        const SizedBox(height: 10),
+        TextField(
+          maxLines: maxLines,
+          style: const TextStyle(color: Colors.white, fontSize: 14),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.textDim, fontSize: 14),
+            filled: true,
+            fillColor: AppColors.surfaceHover,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            contentPadding: const EdgeInsets.all(16),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isPrimary;
+  final VoidCallback onPressed;
+  const _ActionButton({required this.label, required this.icon, this.isPrimary = false, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return isPrimary
+        ? ElevatedButton.icon(
+            onPressed: onPressed,
+            icon: Icon(icon, size: 16),
+            label: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          )
+        : OutlinedButton.icon(
+            onPressed: onPressed,
+            icon: Icon(icon, size: 16),
+            label: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              side: const BorderSide(color: AppColors.outline),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+  }
+}
+
+class PageTitle extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  const PageTitle({super.key, required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(width: 24),
+            Container(
+              width: 100,
+              height: 4,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          subtitle,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+        ),
+      ],
     );
   }
 }
